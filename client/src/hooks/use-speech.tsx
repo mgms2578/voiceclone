@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect } from "react";
 
 interface UseSpeechReturn {
   isListening: boolean;
@@ -16,7 +16,7 @@ interface UseSpeechReturn {
 
 export function useSpeech(): UseSpeechReturn {
   const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState('');
+  const [transcript, setTranscript] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [autoSend, setAutoSend] = useState(true);
   const [ttsActive, setTTSActive] = useState(false);
@@ -26,13 +26,14 @@ export function useSpeech(): UseSpeechReturn {
   const forceStopRef = useRef(false);
   const ttsActiveRef = useRef(ttsActive);
 
-  const isSupported = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
+  const isSupported =
+    "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
 
   // Update refs when values change
   useEffect(() => {
     autoSendRef.current = autoSend;
   }, [autoSend]);
-  
+
   useEffect(() => {
     ttsActiveRef.current = ttsActive;
   }, [ttsActive]);
@@ -40,12 +41,13 @@ export function useSpeech(): UseSpeechReturn {
   useEffect(() => {
     if (!isSupported) return;
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
+
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'ko-KR';
+    recognition.lang = "ko-KR";
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -53,8 +55,8 @@ export function useSpeech(): UseSpeechReturn {
     };
 
     recognition.onresult = (event) => {
-      let finalTranscript = '';
-      let interimTranscript = '';
+      let finalTranscript = "";
+      let interimTranscript = "";
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
@@ -71,20 +73,34 @@ export function useSpeech(): UseSpeechReturn {
       // Auto-send after 2.2 seconds of any result (final or interim)
       const fullText = (finalTranscript + interimTranscript).trim();
       if (fullText && autoSendRef.current) {
-        console.log('자동 전송 준비:', fullText, 'autoSend:', autoSendRef.current, 'final:', !!finalTranscript);
+        console.log(
+          "자동 전송 준비:",
+          fullText,
+          "autoSend:",
+          autoSendRef.current,
+          "final:",
+          !!finalTranscript,
+        );
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
-        
+
         timeoutRef.current = setTimeout(() => {
-          console.log('자동 전송 이벤트 발생:', fullText);
+          console.log("자동 전송 이벤트 발생:", fullText);
           // Trigger custom event for auto-send with full transcript
-          window.dispatchEvent(new CustomEvent('autoSendMessage', { 
-            detail: { transcript: fullText } 
-          }));
+          window.dispatchEvent(
+            new CustomEvent("autoSendMessage", {
+              detail: { transcript: fullText },
+            }),
+          );
         }, 2200);
       } else {
-        console.log('자동 전송 건너뜀 - fullText:', fullText, 'autoSend:', autoSendRef.current);
+        console.log(
+          "자동 전송 건너뜀 - fullText:",
+          fullText,
+          "autoSend:",
+          autoSendRef.current,
+        );
       }
     };
 
@@ -118,29 +134,13 @@ export function useSpeech(): UseSpeechReturn {
 
   const startListening = useCallback(() => {
     if (!isSupported || !recognitionRef.current) {
-      setError('음성 인식이 지원되지 않습니다.');
+      setError("음성 인식이 지원되지 않습니다.");
       return;
     }
 
-    // Don't start if TTS is active - show toast instead of blocking error
-    if (ttsActiveRef.current) {
-      // Clear any existing error immediately
-      setError(null);
-      // Show non-blocking toast message instead
-      if (typeof window !== 'undefined' && window.dispatchEvent) {
-        window.dispatchEvent(new CustomEvent('showToast', { 
-          detail: { 
-            title: '알림',
-            description: '음성 재생 중에는 음성 인식을 사용할 수 없습니다.',
-            variant: 'destructive'
-          } 
-        }));
-      }
-      return;
-    }
-
+    // ✅ TTS 체크 로직 제거 - 음성 출력 중에도 음성 입력 가능하도록
     setError(null);
-    setTranscript('');
+    setTranscript("");
     forceStopRef.current = false;
     recognitionRef.current.start();
   }, [isSupported]);
@@ -148,11 +148,11 @@ export function useSpeech(): UseSpeechReturn {
   const stopListening = useCallback(() => {
     forceStopRef.current = true;
     setIsListening(false);
-    
+
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    
+
     // Clear autosend timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -161,7 +161,7 @@ export function useSpeech(): UseSpeechReturn {
   }, []);
 
   const resetTranscript = useCallback(() => {
-    setTranscript('');
+    setTranscript("");
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -176,14 +176,12 @@ export function useSpeech(): UseSpeechReturn {
       timeoutRef.current = null;
     }
   }, []);
-  
+
+  // ✅ 자동 stopListening 제거 - TTS 활성화 시 음성 인식을 자동으로 중단하지 않음
   const setTTSActiveWithCleanup = useCallback((active: boolean) => {
     setTTSActive(active);
-    if (active) {
-      // Stop listening when TTS starts
-      stopListening();
-    }
-  }, [stopListening]);
+    // 더 이상 TTS 시작 시 자동으로 음성 인식을 중단하지 않음
+  }, []);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -220,12 +218,12 @@ export function useTTS(): UseTTSReturn {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const speak = useCallback((text: string) => {
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       // Stop any current speech
       window.speechSynthesis.cancel();
-      
+
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ko-KR';
+      utterance.lang = "ko-KR";
       utterance.rate = 1.0;
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
@@ -239,7 +237,7 @@ export function useTTS(): UseTTSReturn {
   }, []);
 
   const stop = useCallback(() => {
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
     }
@@ -254,12 +252,12 @@ declare global {
     SpeechRecognition: any;
     webkitSpeechRecognition: any;
   }
-  
+
   interface SpeechRecognitionEvent {
     resultIndex: number;
     results: SpeechRecognitionResultList;
   }
-  
+
   interface SpeechRecognitionErrorEvent {
     error: string;
   }
