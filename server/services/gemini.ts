@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-console.log("[prompt-check]", systemPrompt.slice(0, 50));
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || "",
 });
@@ -84,7 +84,7 @@ export async function getEducationalResponse(
 `;
 
     // 👇 이 줄을 바로 여기에 넣으세요
-    console.log("[prompt-head]", systemPrompt.slice(0, 40));
+    console.log("[prompt-check]", systemPrompt.slice(0, 50));
 
     // Build conversation context
     const conversationContext = conversationHistory
