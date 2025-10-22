@@ -92,6 +92,8 @@ export function registerWebSocketRoutes(app: Express) {
         conversationHistory,
       );
 
+      console.log("[AI 응답 확인]", aiResponse.slice(0, 120));
+
       // Check if session still exists before saving AI message
       const sessionCheck = await storage.getSession(sessionId);
       if (!sessionCheck) {
