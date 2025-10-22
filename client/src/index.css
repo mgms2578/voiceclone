@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Vertical (Portrait) Mode Optimization for FHD 1920x1080 */
+@media (orientation: portrait) and (min-height: 1800px) {
+  .kiosk-intro {
+    padding: 2rem 1.5rem !important;
+  }
+  
+  .kiosk-title {
+    font-size: 3.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .kiosk-subtitle {
+    font-size: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  .kiosk-icon {
+    width: 8rem !important;
+    height: 8rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .kiosk-button {
+    font-size: 2rem !important;
+    padding: 2rem 3rem !important;
+    min-height: 100px !important;
+  }
+  
+  .kiosk-description {
+    font-size: 1.125rem !important;
+    line-height: 1.75 !important;
+  }
+}
+
+/* Custom animations for kiosk interface */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.6);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.glow-animation {
+  animation: glow 2s ease-in-out infinite;
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Kiosk specific colors */
+  --kiosk-primary: hsl(213, 82%, 56%);
+  --kiosk-secondary: hsl(262, 69%, 57%);
+  --kiosk-accent: hsl(160, 84%, 39%);
+  --kiosk-warning: hsl(0, 73%, 60%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground overflow-hidden;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .kiosk-primary {
+    background-color: var(--kiosk-primary);
+  }
+  
+  .kiosk-secondary {
+    background-color: var(--kiosk-secondary);
+  }
+  
+  .kiosk-accent {
+    background-color: var(--kiosk-accent);
+  }
+  
+  .kiosk-warning {
+    background-color: var(--kiosk-warning);
+  }
+  
+  .text-kiosk-primary {
+    color: var(--kiosk-primary);
+  }
+  
+  .text-kiosk-secondary {
+    color: var(--kiosk-secondary);
+  }
+  
+  .text-kiosk-accent {
+    color: var(--kiosk-accent);
+  }
+  
+  .text-kiosk-warning {
+    color: var(--kiosk-warning);
+  }
+  
+  .border-kiosk-primary {
+    border-color: var(--kiosk-primary);
+  }
+  
+  .border-kiosk-warning {
+    border-color: var(--kiosk-warning);
+  }
+  
+  .bg-kiosk-primary {
+    background-color: var(--kiosk-primary);
+  }
+  
+  .bg-kiosk-secondary {
+    background-color: var(--kiosk-secondary);
+  }
+  
+  .bg-kiosk-accent {
+    background-color: var(--kiosk-accent);
+  }
+  
+  .bg-kiosk-warning {
+    background-color: var(--kiosk-warning);
+  }
+
+  .waveform-animation {
+    animation: waveform 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes waveform {
+    from {
+      height: 8px;
+    }
+    to {
+      height: var(--target-height, 48px);
+    }
+  }
+}
