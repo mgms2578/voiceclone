@@ -247,7 +247,6 @@ export default function KioskPage() {
 
       // 작은 토스트로 1.5초만 표시
       toast({
-        title: "오류",
         description: error.message,
         variant: "destructive",
         duration: 1500,
@@ -668,366 +667,554 @@ export default function KioskPage() {
     setShowTTSSettings(false);
 
     // WebSocket 연결 재초기화하여 새 설정 적용
-    console.log("TTS 설정 저장 후 WebSocket refresh 호출");
-    tts.refresh();
+    if (sessionId && currentStep === "chat") {
+      console.log("🔄 설정 변경으로 인한 WebSocket 재연결:", {
+        model: selectedTTSModel,
+        speed: ttsSpeed,
+      });
+      tts.refresh();
+    }
+
+    toast({
+      title: "설정 저장됨",
+      description: `모델: ${TTS_MODELS.find((m) => m.value === selectedTTSModel)?.label}, 속도: ${ttsSpeed}x`,
+    });
   };
 
-  // Intro screen
   if (currentStep === "intro") {
+    // 인트로 화면
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center space-y-8 max-w-2xl">
-            <div className="space-y-4">
-              <h1 className="text-6xl font-bold text-gray-800 mb-4">
-                AI 음성 클로닝 체험
-              </h1>
-              <p className="text-2xl text-gray-600 leading-relaxed">
-                당신의 목소리로 만드는 특별한 경험
-              </p>
-            </div>
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-purple-700 text-white kiosk-intro relative">
+        {/* 오른쪽 상단 시크릿 버튼 */}
+        <button
+          onClick={() => setShowTTSSettings(true)}
+          className="absolute top-4 right-4 p-3 opacity-40 hover:opacity-100 transition-opacity duration-300"
+          data-testid="button-tts-settings"
+          aria-label="TTS 설정"
+        >
+          <Settings className="w-8 h-8" />
+        </button>
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg space-y-6">
-              <div className="grid grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                    <Mic className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-800">1. 음성 녹음</h3>
-                  <p className="text-sm text-gray-600">
-                    짧은 대본을 읽어주세요
-                  </p>
-                </div>
+        <div className="text-center max-w-4xl mx-auto px-4">
+          <div className="mb-8">
+            <Mic className="w-32 h-32 mx-auto mb-6 opacity-90 float-animation kiosk-icon" />
+          </div>
 
-                <div className="space-y-2">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                    <Bot className="w-8 h-8 text-purple-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-800">2. AI 학습</h3>
-                  <p className="text-sm text-gray-600">당신만의 AI 음성 생성</p>
-                </div>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 kiosk-title">
+            음성 딥페이크 체험
+          </h1>
+          <h2 className="text-2xl md:text-3xl font-medium mb-8 opacity-90 kiosk-subtitle">
+            AI 딥페이크 위험성 교육 서비스
+          </h2>
 
-                <div className="space-y-2">
-                  <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto">
-                    <MessageCircle className="w-8 h-8 text-pink-600" />
-                  </div>
-                  <h3 className="font-semibold text-gray-800">3. 대화 체험</h3>
-                  <p className="text-sm text-gray-600">
-                    AI와 자유롭게 대화하기
-                  </p>
+          <div className="mb-8 md:mb-12">
+            <p className="text-lg md:text-xl leading-relaxed mb-4 kiosk-description">
+              나의 목소리를 AI가 학습하고 복제하는 과정을 직접 체험해보세요.
+            </p>
+            <p className="text-base md:text-lg opacity-80 kiosk-description">
+              복제된 목소리로 AI와 딥페이크의 위험성에 관해 대화하는 교육
+              프로그램입니다.
+            </p>
+          </div>
+
+          <Button
+            onClick={handleStartExperience}
+            size="lg"
+            className="bg-white text-blue-600 text-2xl md:text-3xl font-bold py-8 md:py-10 px-12 md:px-16 rounded-3xl shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-500 glow-animation hover:animate-none min-h-[100px] md:min-h-[120px] border-4 border-white/20 active:scale-95 kiosk-button"
+            data-testid="button-start"
+          >
+            <Hand className="mr-4 md:mr-6 w-8 md:w-10 h-8 md:h-10 animate-bounce" />
+            화면을 터치하여 시작하기
+          </Button>
+
+          <div className="mt-6 md:mt-8 text-base md:text-lg opacity-80">
+            체험 시간: 약 5분
+          </div>
+        </div>
+
+        {/* TTS Settings Dialog */}
+        {showTTSSettings && (
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-80"
+            onClick={() => setShowTTSSettings(false)}
+          >
+            <div
+              className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-center text-2xl font-bold text-gray-800 mb-6">
+                TTS 설정
+              </h2>
+
+              {/* TTS Model Selection */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                  모델 선택
+                </h3>
+                <div className="space-y-3">
+                  {TTS_MODELS.map((model) => (
+                    <button
+                      key={model.value}
+                      onClick={() => handleTTSModelChange(model.value)}
+                      className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                        selectedTTSModel === model.value
+                          ? "border-blue-600 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                      }`}
+                      data-testid={`button-tts-model-${model.value}`}
+                    >
+                      <div className="font-semibold text-gray-800">
+                        {model.label}
+                      </div>
+                      {selectedTTSModel === model.value && (
+                        <div className="mt-2 text-blue-600 text-sm font-medium">
+                          ✓ 선택됨
+                        </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
+
+              {/* TTS Speed Control */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                  속도 조절
+                </h3>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="2.0"
+                    step="0.1"
+                    value={ttsSpeed}
+                    onChange={(e) =>
+                      handleTTSSpeedChange(parseFloat(e.target.value))
+                    }
+                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    data-testid="slider-tts-speed"
+                  />
+                  <span
+                    className="text-lg font-semibold text-gray-800 min-w-[60px] text-right"
+                    data-testid="text-tts-speed"
+                  >
+                    {ttsSpeed.toFixed(1)}x
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-500 mt-2">
+                  <span>느림 (0.5x)</span>
+                  <span>빠름 (2.0x)</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  onClick={handleCloseSettings}
+                  className="px-8 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 text-lg font-medium transition-colors"
+                  data-testid="button-close-tts-settings"
+                >
+                  저장
+                </button>
+              </div>
             </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
+  if (currentStep === "consent") {
+    return (
+      <div className="h-screen bg-white p-8">
+        <div className="max-w-4xl mx-auto h-full flex flex-col">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+              개인정보 수집 및 이용 동의
+            </h1>
+            <div className="flex items-center justify-center text-blue-600">
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold mr-4">
+                1
+              </div>
+              <div className="w-16 h-1 bg-blue-600 mr-4"></div>
+              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">
+                2
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 bg-gray-50 rounded-xl p-6 mb-8 overflow-y-auto">
+            <div className="space-y-6">
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                    <Shield className="text-green-600 mr-3 w-6 h-6" />
+                    수집하는 개인정보
+                  </h3>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• 음성 데이터 (10-20초 분량)</li>
+                    <li>• 체험 진행 로그 (익명 처리)</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                    <Clock className="text-purple-600 mr-3 w-6 h-6" />
+                    이용 목적 및 보유 기간
+                  </h3>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• 목적: AI 음성 클로닝 체험 및 딥페이크 교육</li>
+                    <li>• 보유 기간: 체험 완료 후 즉시 삭제</li>
+                    <li>
+                      • 외부 전송: MiniMax AI 서비스 (일시적 처리 후 삭제)
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* 버튼들을 위로 이동 */}
+          <div className="flex gap-4 justify-center mb-6">
             <Button
-              onClick={handleStartExperience}
+              onClick={handleDeclineConsent}
+              variant="outline"
               size="lg"
-              className="text-2xl py-8 px-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:from-blue-700 hover:to-purple-700 shadow-lg transform hover:scale-105 transition-all"
+              className="text-xl font-semibold py-4 px-8"
+              disabled={createSessionMutation.isPending}
+              data-testid="button-decline"
             >
-              체험 시작하기
+              <X className="mr-3 w-5 h-5" />
+              동의하지 않음
             </Button>
+            <Button
+              onClick={handleConsent}
+              size="lg"
+              className="bg-blue-600 text-xl font-semibold py-4 px-12"
+              disabled={createSessionMutation.isPending}
+              data-testid="button-agree"
+            >
+              {createSessionMutation.isPending ? (
+                <>
+                  <div className="mr-3 w-5 h-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  세션 생성 중...
+                </>
+              ) : (
+                <>
+                  <Check className="mr-3 w-5 h-5" />
+                  동의하고 계속하기
+                </>
+              )}
+            </Button>
+          </div>
 
-            <p className="text-sm text-gray-500 mt-4">소요 시간: 약 5-10분</p>
+          {/* 안내 문구를 아래로 이동 */}
+          <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+            <p className="text-red-600 font-medium text-center">
+              <TriangleAlert className="inline mr-2 w-5 h-5" />본 동의는 체험을
+              위한 것이며, 언제든지 체험을 중단할 수 있습니다.
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
-  // Consent screen
-  if (currentStep === "consent") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center p-8">
-        <Card className="max-w-2xl w-full shadow-xl">
-          <CardContent className="p-8 space-y-6">
-            <div className="flex items-center justify-center mb-4">
-              <Shield className="w-16 h-16 text-blue-600" />
-            </div>
-
-            <h2 className="text-3xl font-bold text-center text-gray-800">
-              개인정보 수집 및 이용 동의
-            </h2>
-
-            <div className="bg-gray-50 rounded-lg p-6 space-y-4 max-h-96 overflow-y-auto">
-              <div className="space-y-2">
-                <h3 className="font-semibold text-lg flex items-center">
-                  <Clock className="w-5 h-5 mr-2 text-blue-600" />
-                  수집 목적
-                </h3>
-                <p className="text-gray-600 pl-7">
-                  AI 음성 클로닝 기술 체험 및 서비스 제공
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-semibold text-lg flex items-center">
-                  <ScrollText className="w-5 h-5 mr-2 text-blue-600" />
-                  수집 항목
-                </h3>
-                <ul className="text-gray-600 pl-7 space-y-1">
-                  <li>• 음성 녹음 데이터</li>
-                  <li>• 대화 내용</li>
-                  <li>• 생성된 AI 음성</li>
-                </ul>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-semibold text-lg flex items-center">
-                  <Clock className="w-5 h-5 mr-2 text-blue-600" />
-                  보유 기간
-                </h3>
-                <p className="text-gray-600 pl-7">
-                  체험 종료 즉시 자동 삭제 (최대 60분)
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-semibold text-lg flex items-center">
-                  <TriangleAlert className="w-5 h-5 mr-2 text-yellow-600" />
-                  주의사항
-                </h3>
-                <ul className="text-gray-600 pl-7 space-y-1">
-                  <li>• 수집된 데이터는 체험 목적으로만 사용됩니다</li>
-                  <li>• 체험 종료 시 모든 데이터가 즉시 삭제됩니다</li>
-                  <li>• 타인의 음성을 무단으로 사용하지 마세요</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="flex space-x-4">
-              <Button
-                onClick={handleDeclineConsent}
-                variant="outline"
-                size="lg"
-                className="flex-1 text-lg"
-              >
-                <X className="w-5 h-5 mr-2" />
-                동의하지 않음
-              </Button>
-              <Button
-                onClick={handleConsent}
-                size="lg"
-                className="flex-1 text-lg bg-blue-600 text-white hover:bg-blue-700"
-                disabled={createSessionMutation.isPending}
-              >
-                <Check className="w-5 h-5 mr-2" />
-                {createSessionMutation.isPending
-                  ? "세션 생성 중..."
-                  : "동의하고 시작"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Recording screen
   if (currentStep === "recording") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center p-8">
-        <Card className="max-w-3xl w-full shadow-xl">
-          <CardContent className="p-8 space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-gray-800">
-                음성 녹음하기
+      <div className="h-screen bg-white p-8 relative">
+        {/* Home button */}
+        <Button
+          onClick={handleGoHome}
+          variant="outline"
+          size="lg"
+          className="absolute top-8 left-8 w-16 h-16 rounded-full p-0 bg-white border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 shadow-lg"
+          data-testid="button-home"
+        >
+          <Home className="w-8 h-8 text-gray-600 hover:text-blue-600" />
+        </Button>
+
+        <div className="max-w-5xl mx-auto h-full flex flex-col">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+              음성 녹음하기
+            </h1>
+            <div className="flex items-center justify-center text-blue-600">
+              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold mr-4">
+                1
+              </div>
+              <div className="w-16 h-1 bg-gray-300 mr-4"></div>
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold mr-4">
+                2
+              </div>
+              <div className="w-16 h-1 bg-gray-300 mr-4"></div>
+              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">
+                3
+              </div>
+            </div>
+          </div>
+
+          <Card className="mb-8">
+            <CardContent className="p-8">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center flex items-center justify-center">
+                <ScrollText className="text-purple-600 mr-3 w-6 h-6" />
+                다음 대본을 읽어주세요
               </h2>
-              <p className="text-lg text-gray-600">
-                아래 대본을 자연스럽게 읽어주세요
-              </p>
-            </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-600">
+                <p className="text-xl leading-relaxed text-gray-700 text-center">
+                  {SCRIPT_TEXT}
+                </p>
+              </div>
+              <div className="text-center mt-4 text-gray-600">
+                <CircleOff className="inline mr-2 w-4 h-4" />
+                예상 읽기 시간: 10-15초 | 최대 30초까지 녹음됩니다
+              </div>
+            </CardContent>
+          </Card>
 
-            <div className="bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
-              <p className="text-xl text-gray-800 leading-relaxed text-center">
-                {SCRIPT_TEXT}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {recording.isRecording && (
-                <div className="flex flex-col items-center space-y-4">
-                  <Waveform isActive={recording.isRecording} />
-                  <p className="text-2xl font-semibold text-gray-800">
-                    {Math.floor(recording.recordingTime / 60)}:
-                    {(recording.recordingTime % 60).toString().padStart(2, "0")}
-                  </p>
+          <div className="flex-1 flex flex-col items-center justify-center">
+            {/* 클로닝 진행 중일 때 */}
+            {recording.audioBlob && uploadAudioMutation.isPending && (
+              <div className="text-center">
+                <div className="mb-8">
+                  <div className="relative">
+                    <div className="w-24 h-24 border-6 border-blue-200 rounded-full"></div>
+                    <div className="absolute top-0 left-0 w-24 h-24 border-6 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Bot className="w-12 h-12 text-blue-600" />
+                    </div>
+                  </div>
                 </div>
-              )}
+                <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                  음성 클로닝 진행 중
+                </h2>
+                <p className="text-lg text-gray-600 mb-6">
+                  MiniMax AI가 당신의 목소리를 학습하고 있습니다...
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center text-base text-gray-700">
+                    <Check className="w-5 h-5 text-green-600 mr-3" />
+                    음성 파일 업로드 완료
+                  </div>
+                  <div className="flex items-center justify-center text-base text-gray-700">
+                    <Loader2 className="w-5 h-5 text-blue-600 mr-3 animate-spin" />
+                    AI 음성 모델 생성 중...
+                  </div>
+                </div>
+              </div>
+            )}
 
-              <div className="flex justify-center space-x-4">
-                {!recording.isRecording &&
-                  !recording.audioBlob &&
-                  !uploadAudioMutation.isPending && (
-                    <Button
-                      onClick={recording.startRecording}
-                      size="lg"
-                      className="text-xl py-6 px-8 bg-red-600 text-white rounded-full hover:bg-red-700"
-                    >
-                      <Mic className="w-6 h-6 mr-2" />
-                      녹음 시작
-                    </Button>
-                  )}
+            {/* 클로닝 실패 시 재시도 */}
+            {recording.audioBlob && uploadAudioMutation.isError && (
+              <div className="text-center">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <X className="w-8 h-8 text-red-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                    음성 클로닝 실패
+                  </h2>
+                  <p className="text-gray-600 mb-6">다시 시도해주세요.</p>
+                  <Button
+                    onClick={() => {
+                      // 녹음 상태 초기화하고 녹음 화면으로 돌아가기
+                      recording.clearRecording();
+                      uploadAudioMutation.reset();
+                    }}
+                    size="lg"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                  >
+                    다시 시도하기
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* 일반 녹음 상태 */}
+            {!uploadAudioMutation.isPending && !uploadAudioMutation.isError && (
+              <>
+                {recording.isRecording && (
+                  <Waveform isRecording={recording.isRecording} />
+                )}
 
                 {recording.isRecording && (
-                  <Button
-                    onClick={recording.stopRecording}
-                    size="lg"
-                    className="text-xl py-6 px-8 bg-gray-600 text-white rounded-full hover:bg-gray-700"
+                  <div
+                    className="text-6xl font-mono font-bold text-blue-600 mb-8"
+                    data-testid="text-timer"
                   >
-                    <Hand className="w-6 h-6 mr-2" />
-                    녹음 중지
-                  </Button>
+                    {Math.floor(recording.recordingTime / 60)
+                      .toString()
+                      .padStart(2, "0")}
+                    :
+                    {(recording.recordingTime % 60).toString().padStart(2, "0")}
+                  </div>
                 )}
 
-                {recording.audioBlob && !uploadAudioMutation.isPending && (
-                  <>
-                    <Button
-                      onClick={recording.clearRecording}
-                      variant="outline"
-                      size="lg"
-                      className="text-xl py-6 px-8"
-                    >
-                      <CircleOff className="w-6 h-6 mr-2" />
-                      다시 녹음
-                    </Button>
-                  </>
-                )}
+                <Button
+                  onClick={
+                    recording.isRecording
+                      ? recording.stopRecording
+                      : recording.startRecording
+                  }
+                  size="lg"
+                  className={`text-2xl font-semibold py-8 px-16 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ${
+                    recording.isRecording
+                      ? "bg-red-600 hover:bg-red-700 animate-pulse"
+                      : recording.audioBlob
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-red-600 hover:bg-red-700"
+                  }`}
+                  data-testid="button-record"
+                >
+                  {recording.isRecording ? (
+                    <>
+                      <MicOff className="mr-4 w-6 h-6" />
+                      녹음 중지하기
+                    </>
+                  ) : recording.audioBlob ? (
+                    <>
+                      <Check className="mr-4 w-6 h-6" />
+                      녹음 완료!
+                    </>
+                  ) : (
+                    <>
+                      <Mic className="mr-4 w-6 h-6" />
+                      녹음 시작하기
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
+
+            {recording.error && (
+              <div className="mt-4 text-red-600 text-center">
+                {recording.error}
               </div>
+            )}
 
-              {uploadAudioMutation.isPending && (
-                <div className="text-center space-y-4">
-                  <Loader2 className="w-12 h-12 animate-spin mx-auto text-blue-600" />
-                  <p className="text-xl text-gray-600">
-                    AI가 당신의 목소리를 학습하고 있습니다...
-                  </p>
-                  <p className="text-sm text-gray-500">잠시만 기다려주세요</p>
-                </div>
-              )}
-
-              {recording.error && (
-                <p className="text-red-600 text-center">{recording.error}</p>
-              )}
+            <div className="mt-6 text-gray-600 text-center">
+              <p>
+                녹음 시작하기 버튼을 누르고 위의 대본을 자연스럽게 읽어주세요
+              </p>
             </div>
-
-            <div className="text-center text-sm text-gray-500 space-y-1">
-              <p>• 최소 10초 이상 녹음해주세요</p>
-              <p>• 조용한 환경에서 녹음하면 더 좋은 결과를 얻을 수 있습니다</p>
-              <p>• 최대 30초까지 녹음 가능합니다</p>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Chat screen
+  // 사용하지 않는 cloning 화면 제거됨 (recording 화면에서 진행상황 표시)
+
   if (currentStep === "chat") {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <div className="bg-white border-b px-6 py-4">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <Bot className="w-8 h-8 text-blue-600" />
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800">
-                  AI와 대화하기
-                </h1>
-                <p className="text-sm text-gray-500">
-                  당신의 목소리로 답변합니다
-                </p>
-              </div>
+      <div className="h-screen bg-white flex flex-col">
+        <div className="bg-blue-600 text-white p-6">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">AI와 대화하기</h1>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <User className="w-6 h-6" />
+              </div>
+              <div className="text-2xl">🔄</div>
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <Bot className="w-6 h-6" />
+              </div>
+              {/* 설정 버튼 */}
+              <button
                 onClick={() => setShowTTSSettings(true)}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-                data-testid="button-tts-settings"
+                className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all"
+                data-testid="button-chat-settings-header"
+                aria-label="TTS 설정"
               >
-                <Settings className="w-4 h-4" />
-                <span>TTS 설정</span>
-              </Button>
+                <Settings className="w-6 h-6" />
+              </button>
             </div>
           </div>
         </div>
 
         <div
-          className="flex-1 overflow-y-auto p-6"
+          className="flex-1 max-w-6xl mx-auto w-full p-6 overflow-y-auto"
           data-testid="chat-container"
         >
-          <div className="max-w-6xl mx-auto space-y-6">
-            {messages.map((message) => (
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex items-start space-x-4 mb-6 ${
+                message.role === "user" ? "justify-end" : ""
+              }`}
+              data-testid={`message-${message.role}-${message.id}`}
+            >
+              {message.role === "assistant" && (
+                <div
+                  className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-purple-700 transition-colors"
+                  onClick={() => {
+                    if (message.audioUrl) {
+                      const audio = new Audio(message.audioUrl);
+                      audio.play().catch(console.error);
+                    }
+                  }}
+                  title="클릭하여 음성 재생"
+                  data-testid="button-play-audio"
+                >
+                  <Bot className="w-6 h-6" />
+                </div>
+              )}
+
               <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex-1 ${message.role === "user" ? "text-right" : ""}`}
               >
                 <div
-                  className={`flex items-start space-x-3 max-w-2xl ${
+                  className={`rounded-2xl p-4 max-w-2xl ${
                     message.role === "user"
-                      ? "flex-row-reverse space-x-reverse"
-                      : ""
+                      ? "bg-blue-600 text-white rounded-tr-none ml-auto"
+                      : "bg-gray-100 rounded-tl-none"
                   }`}
                 >
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.role === "user" ? "bg-blue-600" : "bg-purple-600"
-                    }`}
+                  <p
+                    className={
+                      message.role === "user" ? "text-white" : "text-gray-800"
+                    }
                   >
-                    {message.role === "user" ? (
-                      <User className="w-5 h-5 text-white" />
-                    ) : (
-                      <Bot className="w-5 h-5 text-white" />
-                    )}
-                  </div>
-                  <div
-                    className={`flex-1 ${
-                      message.role === "user"
-                        ? "max-w-2xl ml-auto"
-                        : "max-w-2xl"
-                    }`}
-                  >
-                    <div
-                      className={`rounded-2xl p-4 ${
-                        message.role === "user"
-                          ? "bg-blue-600 text-white rounded-tr-none"
-                          : "bg-gray-100 text-gray-800 rounded-tl-none"
-                      }`}
-                    >
-                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                    </div>
-                    <div
-                      className={`text-xs text-gray-500 mt-1 ${
-                        message.role === "user" ? "text-right mr-2" : "ml-2"
-                      }`}
-                    >
-                      {message.role === "user" ? "사용자" : "복제된 음성"}
-                    </div>
-                  </div>
+                    {message.content}
+                  </p>
+                </div>
+                <div
+                  className={`text-xs text-gray-500 mt-1 ${
+                    message.role === "user" ? "mr-4" : "ml-4"
+                  }`}
+                >
+                  {message.role === "user" ? "사용자" : "복제된 음성"}
                 </div>
               </div>
-            ))}
 
-            {sendMessageMutation.isPending && (
-              <div className="flex items-start space-x-3">
-                <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-5 h-5 text-white" />
+              {message.role === "user" && (
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                  <User className="w-6 h-6" />
                 </div>
-                <div className="flex-1 max-w-2xl">
-                  <div className="bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none p-4">
-                    <div className="flex items-center space-x-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-gray-600">
-                        AI가 답변을 생성하고 있습니다...
-                      </span>
-                    </div>
+              )}
+            </div>
+          ))}
+
+          {sendMessageMutation.isPending && (
+            <div className="flex items-start space-x-4 mb-6">
+              <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white">
+                <Bot className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <div className="bg-gray-100 rounded-2xl rounded-tl-none p-4 max-w-2xl">
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-gray-600">
+                      AI가 답변을 생성하고 있습니다...
+                    </span>
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <div className="border-t bg-gray-50 p-6">
