@@ -25,6 +25,13 @@ body {
     @apply font-sans antialiased bg-background text-foreground;
     font-family: "Inter", sans-serif;
   }
+
+  /* 📱 모바일(세로 900px 이하) 폰트 크기 확대 */
+  @media (max-height: 900px) {
+    html {
+      font-size: 18px; /* 기본 16px → 18px (가독성 향상용) */
+    }
+  }
 }
 
 /* ✅ 모바일 환경(세로 1800px 미만)만 반응형 처리 */
