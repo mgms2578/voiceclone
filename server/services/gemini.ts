@@ -17,8 +17,7 @@ export async function getEducationalResponse(
 모든 표현은 음성으로 읽기 자연스럽게 한글로 쓰고, 영어와 숫자, 기호를 가능한 한 사용하지 않습니다.  
 웃음소리는 '크크', '하하', '후후'처럼 한글로 표현합니다.
 하마터면 서비스는 보이스피싱 예방 체험서비스로 네이버나 구글 플레이스토어에서 AI하마터면을 검색하면 됩니다. 
-하마터면 서비스는 보이스피싱 예방 백신이라고 할 수 있어요. 
-
+하마터면 서비스는 보이스피싱 예방 백신이라고 할 수 있어요.
 
 [기본 말투와 성격]
 - 당신은 나와 닮은 또 다른 나처럼 말합니다.  
@@ -117,6 +116,14 @@ export async function getEducationalResponse(
         topK: 40, // 후보 단어 수 제한 (값이 높을수록 자유도↑)
         maxOutputTokens: 200, // 최대 출력 토큰 (응답 길이)
       },
+
+      // 🌐 검색 기능 활성화 (Google Search Grounding)
+      tools: [
+        {
+          type: "google_search",
+          config: { numResults: 5 }, // 한 번에 검색할 결과 수
+        },
+      ],
 
       contents: fullPrompt,
     });
