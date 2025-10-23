@@ -4,8 +4,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import KioskDownloadPage from "./pages/kio";
-import KioskWebSocketPage from "./pages/kiosk-websocket";
+import KioskDownloadPage from "./pages/kiosk-download";
+impsk-downloadort KioskWebSocketPage from "./pages/kiosk-websocket";
 import KioskHomePage from "./pages/kiosk-home";
 
 function Router() {
