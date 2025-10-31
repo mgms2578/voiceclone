@@ -931,7 +931,7 @@ export default function KioskPage() {
           <Home className="w-8 h-8 text-gray-600 hover:text-blue-600" />
         </Button>
 
-        <div className="max-w-4xl mx-auto h-full flex flex-col px-2 md:px-4">
+        <div className="max-w-4xl mx-auto h-full flex flex-col px-1 md:px-4">
           <div className="text-center mb-3 md:mb-6 md:mb-4">
             <h1 className="text-xl md:text-4xl font-bold text-gray-800 mb-2">
               음성 녹음하기
@@ -967,9 +967,9 @@ export default function KioskPage() {
             </div>
           </div>
 
-          <Card className="mb-2 md:mb-6">
+          <Card className="mb-1 md:mb-6">
             <CardContent className="p-2 md:p-6">
-              <h2 className="text-base md:text-2xl font-semibold text-gray-800 mb-2 md:mb-4 text-center flex items-center justify-center">
+              <h2 className="text-sm md:text-2xl font-semibold text-gray-800 mb-1 md:mb-4 text-center flex items-center justify-center">
                 <ScrollText className="text-purple-600 mr-3 w-6 h-6" />
                 다음 대본을 읽어주세요
               </h2>
@@ -985,11 +985,11 @@ export default function KioskPage() {
             </CardContent>
           </Card>
 
-          <div className="flex-1 flex flex-col items-center justify-start pt-8 md:flex-1">
+          <div className="flex-1 flex flex-col items-center justify-start pt-2 md:flex-1">
             {/* 클로닝 진행 중일 때 */}
             {recording.audioBlob && uploadAudioMutation.isPending && (
               <div className="text-center">
-                <div className="mb-8">
+                <div className="mb-2 md:mb-8">
                   <div className="relative">
                     <div className="w-24 h-24 border-6 border-blue-200 rounded-full"></div>
                     <div className="absolute top-0 left-0 w-24 h-24 border-6 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -998,10 +998,10 @@ export default function KioskPage() {
                     </div>
                   </div>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2 md:mb-4">
                   음성 클로닝 진행 중
                 </h2>
-                <p className="text-lg text-gray-600 mb-6">
+                <p className="text-lg text-gray-600 mb-2 md:mb-6">
                   MiniMax AI가 당신의 목소리를 학습하고 있습니다...
                 </p>
                 <div className="space-y-3">
@@ -1047,12 +1047,14 @@ export default function KioskPage() {
             {!uploadAudioMutation.isPending && !uploadAudioMutation.isError && (
               <>
                 {recording.isRecording && (
-                  <Waveform isRecording={recording.isRecording} />
+                  <div className="my-1 md:my-0">
+                    <Waveform isRecording={recording.isRecording} />
+                  </div>
                 )}
 
                 {recording.isRecording && (
                   <div
-                    className="text-6xl font-mono font-bold text-blue-600 mb-8"
+                    className="text-6xl font-mono font-bold text-blue-600 mb-2 md:mb-8"
                     data-testid="text-timer"
                   >
                     {Math.floor(recording.recordingTime / 60)
