@@ -873,13 +873,13 @@ export default function KioskPage() {
 
           {/* 버튼 */}
           <div className="flex gap-2 md:gap-6 justify-center mb-2 md:mb-6 consent-buttons px-2">
-              <Button
-                onClick={handleDeclineConsent}
-                variant="outline"
-                className="text-sm md:text-xl font-semibold py-2.5 md:py-10 px-4 md:px-12 whitespace-nowrap flex-1 h-auto"
-                disabled={createSessionMutation.isPending}
-                data-testid="button-decline"
-              >
+            <Button
+              onClick={handleDeclineConsent}
+              variant="outline"
+              className="text-sm md:text-2xl font-semibold py-2.5 md:py-14 px-4 md:px-14 whitespace-nowrap flex-1 h-auto md:min-h-[120px]"
+              disabled={createSessionMutation.isPending}
+              data-testid="button-decline"
+            >
               <X className="mr-1.5 w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
               동의하지 않음
             </Button>
