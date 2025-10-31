@@ -1047,7 +1047,7 @@ export default function KioskPage() {
             {!uploadAudioMutation.isPending && !uploadAudioMutation.isError && (
               <>
                 {recording.isRecording && (
-                  <div className="my-1 md:my-0">
+                  <div className="my-1 md:my-0 h-16 md:h-auto overflow-hidden">
                     <Waveform isRecording={recording.isRecording} />
                   </div>
                 )}
