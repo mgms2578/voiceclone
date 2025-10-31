@@ -827,53 +827,39 @@ export default function KioskPage() {
     return (
       <div className="h-screen bg-white p-3 md:p-8">
         <div className="max-w-4xl mx-auto h-full flex flex-col">
-          {/* 제목 - 여백 최소화 */}
-          <div className="text-center mb-3 px-4">
+          {/* 제목 */}
+          <div className="text-center mb-3 md:mb-6 px-4">
             <h1 className="text-xl md:text-4xl font-bold text-gray-800 mb-2">
               개인정보 수집 및 이용 동의
             </h1>
-            {/* Progress Bar - 인라인 스타일로 확실하게 선으로 표시 */}
+            {/* Progress Bar */}
             <div className="flex items-center justify-center gap-4 py-2">
-              <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
-                1
-              </div>
-              <div
-                className="bg-blue-600 flex-shrink-0"
-                style={{
-                  width: "64px",
-                  height: "2px",
-                  minWidth: "64px",
-                  minHeight: "2px",
-                }}
-              ></div>
-              <div className="w-6 h-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">
-                2
-              </div>
+              {/* ... */}
             </div>
           </div>
 
-          {/* 정보 박스 - 적당한 간격 (mb-1.5) */}
-          <div className="bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 overflow-y-auto">
+          {/* 정보 박스 */}
+          <div className="bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 md:mb-4 overflow-y-auto">
             <div className="space-y-3">
               <Card>
-                <CardContent className="p-3 consent-info-box">
-                  <h3 className="text-base md:text-xl font-semibold text-gray-800 mb-1.5 flex items-center">
-                    <Shield className="text-green-600 mr-2 w-4 h-4 flex-shrink-0" />
+                <CardContent className="p-3 md:p-6 consent-info-box">
+                  <h3 className="text-base md:text-xl font-semibold text-gray-800 mb-1.5 md:mb-3 flex items-center">
+                    <Shield className="text-green-600 mr-2 w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                     수집하는 개인정보
                   </h3>
-                  <ul className="text-gray-600 space-y-0.5 consent-info-text text-sm">
+                  <ul className="text-gray-600 space-y-0.5 md:space-y-1 consent-info-text text-sm md:text-base">
                     <li>• 음성 데이터 (10-20초 분량)</li>
                   </ul>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardContent className="p-3 consent-info-box">
-                  <h3 className="text-base md:text-xl font-semibold text-gray-800 mb-1.5 flex items-center">
-                    <Clock className="text-purple-600 mr-2 w-4 h-4 flex-shrink-0" />
+                <CardContent className="p-3 md:p-6 consent-info-box">
+                  <h3 className="text-base md:text-xl font-semibold text-gray-800 mb-1.5 md:mb-3 flex items-center">
+                    <Clock className="text-purple-600 mr-2 w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                     이용 목적 및 보유 기간
                   </h3>
-                  <ul className="text-gray-600 space-y-0.5 consent-info-text text-sm">
+                  <ul className="text-gray-600 space-y-0.5 md:space-y-1 consent-info-text text-sm md:text-base">
                     <li>• 목적: AI 음성 클로닝 체험</li>
                     <li>• 보유 기간: 체험 완료 후 즉시 삭제</li>
                     <li>
@@ -885,23 +871,23 @@ export default function KioskPage() {
             </div>
           </div>
 
-          {/* 버튼 - 적당한 간격 */}
-          <div className="flex gap-2 justify-center mb-2 consent-buttons px-2">
+          {/* 버튼 */}
+          <div className="flex gap-2 md:gap-4 justify-center mb-2 md:mb-4 consent-buttons px-2">
             <Button
               onClick={handleDeclineConsent}
               variant="outline"
               size="lg"
-              className="text-sm md:text-xl font-semibold py-2.5 px-4 whitespace-nowrap flex-1"
+              className="text-sm md:text-xl font-semibold py-2.5 md:py-4 px-4 md:px-8 whitespace-nowrap flex-1"
               disabled={createSessionMutation.isPending}
               data-testid="button-decline"
             >
-              <X className="mr-1.5 w-3.5 h-3.5 flex-shrink-0" />
+              <X className="mr-1.5 w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
               동의하지 않음
             </Button>
             <Button
               onClick={handleConsent}
               size="lg"
-              className="bg-blue-600 text-sm md:text-xl font-semibold py-2.5 px-6 whitespace-nowrap flex-1"
+              className="bg-blue-600 text-sm md:text-xl font-semibold py-2.5 md:py-4 px-6 md:px-10 whitespace-nowrap flex-1"
               disabled={createSessionMutation.isPending}
               data-testid="button-agree"
             >
@@ -912,15 +898,15 @@ export default function KioskPage() {
                 </>
               ) : (
                 <>
-                  <Check className="mr-1.5 w-3.5 h-3.5 flex-shrink-0" />
+                  <Check className="mr-1.5 w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
                   동의하고 계속하기
                 </>
               )}
             </Button>
           </div>
 
-          {/* 경고 문구 - 패딩 최소화 */}
-          <div className="bg-red-50 border border-red-200 p-2 rounded-lg">
+          {/* 경고 문구 */}
+          <div className="bg-red-50 border border-red-200 p-2 md:p-4 rounded-lg">
             <p className="text-red-600 font-medium text-center text-xs md:text-base leading-snug">
               <TriangleAlert className="inline mr-1 w-3.5 h-3.5" />본 동의는
               체험을 위한 것이며, 언제든지 체험을 중단할 수 있습니다.
@@ -999,7 +985,7 @@ export default function KioskPage() {
             </CardContent>
           </Card>
 
-          <div className="flex flex-col items-center justify-center py-4 md:flex-1">
+          <div className="flex-1 flex flex-col items-center justify-start pt-8 md:flex-1">
             {/* 클로닝 진행 중일 때 */}
             {recording.audioBlob && uploadAudioMutation.isPending && (
               <div className="text-center">
