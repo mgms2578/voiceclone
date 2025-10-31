@@ -877,7 +877,7 @@ export default function KioskPage() {
               onClick={handleDeclineConsent}
               variant="outline"
               size="lg"
-              className="text-sm md:text-xl font-semibold py-2.5 md:py-6 px-4 md:px-10 whitespace-nowrap flex-1"
+              className="text-sm md:text-xl font-semibold py-2.5 md:py-10 px-4 md:px-10 whitespace-nowrap flex-1"
               disabled={createSessionMutation.isPending}
               data-testid="button-decline"
             >
