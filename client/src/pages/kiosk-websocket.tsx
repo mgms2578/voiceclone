@@ -987,9 +987,10 @@ export default function KioskPage() {
 
           <div className="flex-1 flex flex-col items-center justify-start pt-2 md:flex-1">
             {/* 클로닝 진행 중일 때 */}
+            📍 수정 코드: tsx
             {recording.audioBlob && uploadAudioMutation.isPending && (
-              <div className="text-center">
-                <div className="mb-2 md:mb-8">
+              <div className="text-center -mt-4 md:mt-0">
+                <div className="mb-0 md:mb-8">
                   <div className="relative">
                     <div className="w-24 h-24 border-6 border-blue-200 rounded-full"></div>
                     <div className="absolute top-0 left-0 w-24 h-24 border-6 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -998,10 +999,10 @@ export default function KioskPage() {
                     </div>
                   </div>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2 md:mb-4">
+                <h2 className="text-3xl font-bold text-gray-800 mb-1 md:mb-4">
                   음성 클로닝 진행 중
                 </h2>
-                <p className="text-lg text-gray-600 mb-2 md:mb-6">
+                <p className="text-lg text-gray-600 mb-1 md:mb-6">
                   MiniMax AI가 당신의 목소리를 학습하고 있습니다...
                 </p>
                 <div className="space-y-3">
@@ -1016,7 +1017,6 @@ export default function KioskPage() {
                 </div>
               </div>
             )}
-
             {/* 클로닝 실패 시 재시도 */}
             {recording.audioBlob && uploadAudioMutation.isError && (
               <div className="text-center">
@@ -1042,12 +1042,11 @@ export default function KioskPage() {
                 </div>
               </div>
             )}
-
             {/* 일반 녹음 상태 */}
             {!uploadAudioMutation.isPending && !uploadAudioMutation.isError && (
               <>
                 {recording.isRecording && (
-                  <div className="my-1 md:my-0 h-8 md:h-auto overflow-hidden">
+                  <div className="my-1 md:my-0 h-6 md:h-auto overflow-hidden">
                     <Waveform isRecording={recording.isRecording} />
                   </div>
                 )}
@@ -1100,13 +1099,11 @@ export default function KioskPage() {
                 </Button>
               </>
             )}
-
             {recording.error && (
               <div className="mt-4 text-red-600 text-center">
                 {recording.error}
               </div>
             )}
-
             <div className="mt-6 text-gray-600 text-center">
               <p>
                 녹음 시작하기 버튼을 누르고 위의 대본을 자연스럽게 읽어주세요
