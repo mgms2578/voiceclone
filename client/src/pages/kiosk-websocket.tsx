@@ -933,7 +933,7 @@ export default function KioskPage() {
 
   if (currentStep === "recording") {
     return (
-      <div className="h-screen bg-white p-8 relative">
+      <div className="h-screen bg-white p-2 md:p-8 relative">
         {/* Home button */}
         <Button
           onClick={handleGoHome}
