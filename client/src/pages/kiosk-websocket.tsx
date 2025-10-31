@@ -876,7 +876,7 @@ export default function KioskPage() {
             <Button
               onClick={handleDeclineConsent}
               variant="outline"
-              className="text-sm md:text-2xl font-semibold py-2.5 md:py-14 px-4 md:px-14 whitespace-nowrap flex-1 h-auto md:min-h-[120px]"
+              className="text-sm md:text-2xl font-semibold py-2.5 md:py-10 px-4 md:px-14 whitespace-nowrap flex-1 h-auto md:min-h-[120px]"
               disabled={createSessionMutation.isPending}
               data-testid="button-decline"
             >
@@ -885,8 +885,7 @@ export default function KioskPage() {
             </Button>
             <Button
               onClick={handleConsent}
-              size="lg"
-              className="bg-blue-600 text-sm md:text-xl font-semibold py-2.5 md:py-4 px-6 md:px-10 whitespace-nowrap flex-1"
+              className="bg-blue-600 text-sm md:text-2xl font-semibold py-2.5 md:py-10 px-6 md:px-14 whitespace-nowrap flex-1 h-auto md:min-h-[120px]"
               disabled={createSessionMutation.isPending}
               data-testid="button-agree"
             >
