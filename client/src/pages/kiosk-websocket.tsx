@@ -945,7 +945,7 @@ export default function KioskPage() {
           <Home className="w-8 h-8 text-gray-600 hover:text-blue-600" />
         </Button>
 
-        <div className="max-w-full mx-auto h-full flex flex-col px-2 md:px-4">
+        <div className="max-w-4xl mx-auto h-full flex flex-col px-2 md:px-4">
           <div className="text-center mb-8">
             <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3">
               음성 녹음하기
