@@ -88,7 +88,7 @@ interface Message {
   audioUrl?: string;
 }
 
-const SCRIPT_TEXT = `안녕하세요! 지금은 음성 클로닝을 체험하고 계십니다. 이 짧은 대본을 읽어주시면, 내 목소리를 바탕으로 새로운 음성이 만들어집니다. 잠시 후, 나와 똑같은 목소리가 재생된다면 어떤 기분일까요?`;
+const SCRIPT_TEXT = `안녕하세요! 지금 음성 클로닝을 체험하고 계십니다. 이 대본을 읽어주시면, 내 목소리를 바탕으로 AI 음성이 만들어집니다. 나와 똑같은 목소리가 재생된다면 어떤 기분일까요?`;
 
 type TTSModel =
   | "speech-2.5-hd-preview"
