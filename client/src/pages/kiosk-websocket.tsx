@@ -825,32 +825,34 @@ export default function KioskPage() {
 
   if (currentStep === "consent") {
     return (
-      <div className="h-screen bg-white p-8">
+      <div className="h-screen bg-white p-4 md:p-8">
         <div className="max-w-4xl mx-auto h-full flex flex-col">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          {/* 제목 - 여백 줄임 */}
+          <div className="text-center mb-4">
+            <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3">
               개인정보 수집 및 이용 동의
             </h1>
             <div className="flex items-center justify-center text-blue-600 step-indicator">
               <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
                 1
               </div>
-              <div className="progress-line bg-blue-600"></div>
+              <div className="progress-line bg-blue-600 mx-2"></div>
               <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">
                 2
               </div>
             </div>
           </div>
 
-          <div className="flex-1 bg-gray-50 rounded-xl p-6 mb-8 overflow-y-auto">
-            <div className="space-y-6">
+          {/* 정보 박스 - 패딩과 간격 줄임 */}
+          <div className="flex-1 bg-gray-50 rounded-xl p-4 mb-4 overflow-y-auto">
+            <div className="space-y-4">
               <Card>
-                <CardContent className="p-6 consent-info-box">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
-                    <Shield className="text-green-600 mr-3 w-6 h-6 flex-shrink-0" />
+                <CardContent className="p-4 consent-info-box">
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2 flex items-center">
+                    <Shield className="text-green-600 mr-2 w-5 h-5 flex-shrink-0" />
                     수집하는 개인정보
                   </h3>
-                  <ul className="text-gray-600 space-y-2 consent-info-text">
+                  <ul className="text-gray-600 space-y-1 consent-info-text text-sm md:text-base">
                     <li>• 음성 데이터 (10-20초 분량)</li>
                     <li>• 체험 진행 로그 (익명 처리)</li>
                   </ul>
@@ -858,12 +860,12 @@ export default function KioskPage() {
               </Card>
 
               <Card>
-                <CardContent className="p-6 consent-info-box">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
-                    <Clock className="text-purple-600 mr-3 w-6 h-6 flex-shrink-0" />
+                <CardContent className="p-4 consent-info-box">
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2 flex items-center">
+                    <Clock className="text-purple-600 mr-2 w-5 h-5 flex-shrink-0" />
                     이용 목적 및 보유 기간
                   </h3>
-                  <ul className="text-gray-600 space-y-2 consent-info-text">
+                  <ul className="text-gray-600 space-y-1 consent-info-text text-sm md:text-base">
                     <li>• 목적: AI 음성 클로닝 체험 및 딥페이크 교육</li>
                     <li>• 보유 기간: 체험 완료 후 즉시 삭제</li>
                     <li>
@@ -875,44 +877,44 @@ export default function KioskPage() {
             </div>
           </div>
 
-          {/* 버튼들을 위로 이동 */}
-          <div className="flex gap-4 justify-center mb-6 consent-buttons">
+          {/* 버튼 - 패딩과 간격 줄임 */}
+          <div className="flex gap-3 justify-center mb-3 consent-buttons">
             <Button
               onClick={handleDeclineConsent}
               variant="outline"
               size="lg"
-              className="text-xl font-semibold py-4 px-8 whitespace-nowrap"
+              className="text-base md:text-xl font-semibold py-3 px-6 whitespace-nowrap"
               disabled={createSessionMutation.isPending}
               data-testid="button-decline"
             >
-              <X className="mr-3 w-5 h-5 flex-shrink-0" />
+              <X className="mr-2 w-4 h-4 flex-shrink-0" />
               동의하지 않음
             </Button>
             <Button
               onClick={handleConsent}
               size="lg"
-              className="bg-blue-600 text-xl font-semibold py-4 px-12 whitespace-nowrap"
+              className="bg-blue-600 text-base md:text-xl font-semibold py-3 px-8 whitespace-nowrap"
               disabled={createSessionMutation.isPending}
               data-testid="button-agree"
             >
               {createSessionMutation.isPending ? (
                 <>
-                  <div className="mr-3 w-5 h-5 animate-spin rounded-full border-2 border-white border-t-transparent flex-shrink-0"></div>
+                  <div className="mr-2 w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent flex-shrink-0"></div>
                   세션 생성 중...
                 </>
               ) : (
                 <>
-                  <Check className="mr-3 w-5 h-5 flex-shrink-0" />
+                  <Check className="mr-2 w-4 h-4 flex-shrink-0" />
                   동의하고 계속하기
                 </>
               )}
             </Button>
           </div>
 
-          {/* 안내 문구를 아래로 이동 */}
-          <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-            <p className="text-red-600 font-medium text-center">
-              <TriangleAlert className="inline mr-2 w-5 h-5" />본 동의는 체험을
+          {/* 경고 문구 - 패딩 줄임 */}
+          <div className="bg-red-50 border border-red-200 p-3 rounded-lg">
+            <p className="text-red-600 font-medium text-center text-sm md:text-base">
+              <TriangleAlert className="inline mr-2 w-4 h-4" />본 동의는 체험을
               위한 것이며, 언제든지 체험을 중단할 수 있습니다.
             </p>
           </div>
