@@ -853,7 +853,7 @@ export default function KioskPage() {
           </div>
 
           {/* 정보 박스 - 적당한 간격 (mb-1.5) */}
-          <div className="flex-1 bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 overflow-y-auto">
+          <div className="bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 overflow-y-auto">
             <div className="space-y-3">
               <Card>
                 <CardContent className="p-3 consent-info-box">
