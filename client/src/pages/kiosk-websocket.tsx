@@ -826,10 +826,10 @@ export default function KioskPage() {
   if (currentStep === "consent") {
     return (
       <div className="h-screen bg-white p-3 md:p-8">
-        <div className="max-w-4xl mx-auto h-full flex flex-col">
+        <div className="max-w-4xl mx-auto h-full flex flex-col md:justify-center">
           {/* 제목 */}
-          <div className="text-center mb-3 md:mb-6 px-4">
-            <h1 className="text-xl md:text-4xl font-bold text-gray-800 mb-2">
+          <div className="text-center mb-3 md:mb-8 px-4">
+            <h1 className="text-xl md:text-4xl font-bold text-gray-800 mb-2 md:mb-4">
               개인정보 수집 및 이용 동의
             </h1>
             {/* Progress Bar */}
@@ -839,7 +839,7 @@ export default function KioskPage() {
           </div>
 
           {/* 정보 박스 */}
-          <div className="bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 md:mb-4 overflow-y-auto">
+          <div className="bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 md:mb-8 overflow-y-auto">
             <div className="space-y-3">
               <Card>
                 <CardContent className="p-3 md:p-6 consent-info-box">
@@ -872,12 +872,12 @@ export default function KioskPage() {
           </div>
 
           {/* 버튼 */}
-          <div className="flex gap-2 md:gap-4 justify-center mb-2 md:mb-4 consent-buttons px-2">
+          <div className="flex gap-2 md:gap-6 justify-center mb-2 md:mb-6 consent-buttons px-2">
             <Button
               onClick={handleDeclineConsent}
               variant="outline"
               size="lg"
-              className="text-sm md:text-xl font-semibold py-2.5 md:py-4 px-4 md:px-8 whitespace-nowrap flex-1"
+              className="text-sm md:text-xl font-semibold py-2.5 md:py-6 px-4 md:px-10 whitespace-nowrap flex-1"
               disabled={createSessionMutation.isPending}
               data-testid="button-decline"
             >
@@ -906,7 +906,7 @@ export default function KioskPage() {
           </div>
 
           {/* 경고 문구 */}
-          <div className="bg-red-50 border border-red-200 p-2 md:p-4 rounded-lg">
+          <div className="bg-red-50 border border-red-200 p-2 md:p-6 rounded-lg">
             <p className="text-red-600 font-medium text-center text-xs md:text-base leading-snug">
               <TriangleAlert className="inline mr-1 w-3.5 h-3.5" />본 동의는
               체험을 위한 것이며, 언제든지 체험을 중단할 수 있습니다.
@@ -987,7 +987,6 @@ export default function KioskPage() {
 
           <div className="flex-1 flex flex-col items-center justify-start pt-2 md:flex-1">
             {/* 클로닝 진행 중일 때 */}
-            📍 수정 코드: tsx
             {recording.audioBlob && uploadAudioMutation.isPending && (
               <div className="text-center -mt-4 md:mt-0">
                 <div className="mb-0 md:mb-8">
