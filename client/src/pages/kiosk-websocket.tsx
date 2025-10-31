@@ -946,8 +946,8 @@ export default function KioskPage() {
         </Button>
 
         <div className="max-w-4xl mx-auto h-full flex flex-col px-2 md:px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3">
+          <div className="text-center mb-3 md:mb-6 md:mb-4">
+            <h1 className="text-xl md:text-4xl font-bold text-gray-800 mb-2">
               음성 녹음하기
             </h1>
             <div className="flex items-center justify-center gap-4">
@@ -981,25 +981,25 @@ export default function KioskPage() {
             </div>
           </div>
 
-          <Card className="mb-3 md:mb-4">
-            <CardContent className="p-3 md:p-4">
-              <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-2 text-center flex items-center justify-center">
+          <Card className="mb-2 md:mb-6">
+            <CardContent className="p-2 md:p-6">
+              <h2 className="text-base md:text-2xl font-semibold text-gray-800 mb-2 md:mb-4 text-center flex items-center justify-center">
                 <ScrollText className="text-purple-600 mr-3 w-6 h-6" />
                 다음 대본을 읽어주세요
               </h2>
-              <div className="bg-white p-3 md:p-4 rounded-lg shadow-sm border-l-4 border-blue-600">
-                <p className="text-base md:text-lg leading-relaxed text-gray-700 text-center">
+              <div className="bg-white p-2 md:p-6 rounded-lg shadow-sm border-l-4 border-blue-600">
+                <p className="text-sm md:text-xl leading-relaxed text-gray-700 text-center">
                   {SCRIPT_TEXT}
                 </p>
               </div>
-              <div className="text-center mt-2 text-gray-600 text-xs md:text-sm">
+              <div className="text-center mt-2 md:mt-4 text-gray-600 text-xs md:text-base">
                 <CircleOff className="inline mr-2 w-4 h-4" />
-                예상 읽기 시간: 10-15초 | 최대 30초까지 녹음됩니다
+                예상 읽기 시간: 10-15초 | 최대 30초 녹음
               </div>
             </CardContent>
           </Card>
 
-          <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center py-4 md:flex-1">
             {/* 클로닝 진행 중일 때 */}
             {recording.audioBlob && uploadAudioMutation.isPending && (
               <div className="text-center">
