@@ -142,10 +142,87 @@
 }
 
 /* ======================
+   🔧 동의 화면 전용 스타일
+   (Progress Bar, 버튼, 정보 박스)
+====================== */
+
+/* 1️⃣ Progress Bar (진행 표시줄) - 모든 화면 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Progress Bar 최소 너비 보장 */
+.progress-line,
+.progress-bar,
+.step-indicator>div[class*="bg-blue"],
+.step-indicator>div[class*="bg-primary"] {
+  min-width: 100px !important;
+  height: 4px !important;
+  border-radius: 2px !important;
+  flex-shrink: 0 !important;
+}
+
+/* 2️⃣ 정보 박스 - 텍스트 잘림 방지 */
+.consent-info-box,
+[class*="border"][class*="rounded-lg"]>div {
+  height: auto !important;
+  min-height: auto !important;
+  overflow: visible !important;
+}
+
+.consent-info-text,
+.consent-info-box p,
+.consent-info-box li {
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.6 !important;
+}
+
+/* 3️⃣ 동의 버튼 - 텍스트 한 줄 유지 */
+.consent-buttons button,
+.button-group button,
+button[class*="동의"] {
+  white-space: nowrap !important;
+  padding: 14px 20px !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+  min-width: fit-content !important;
+}
+
+/* ======================
    📱 모바일 반응형 (768px 이하)
    일반 모바일, 갤럭시 플립, 폴드 펼침 대응
 ====================== */
 @media (max-width: 768px) {
+
+  /* Progress Bar 모바일 조정 */
+  .progress-line,
+  .progress-bar,
+  .step-indicator>div[class*="bg-blue"],
+  .step-indicator>div[class*="bg-primary"] {
+    min-width: 80px !important;
+    height: 3px !important;
+  }
+
+  /* 동의 버튼 모바일 크기 */
+  .consent-buttons button,
+  .button-group button {
+    white-space: nowrap !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* 정보 박스 패딩 */
+  .consent-info-box,
+  [class*="border"][class*="rounded-lg"] {
+    padding: 16px !important;
+  }
 
   /* 전체 패딩 축소 */
   .kiosk-intro {
@@ -228,10 +305,12 @@
     /* 18px → 16px */
   }
 
-  /* 버튼 일반 크기 */
-  button {
+  /* 버튼 일반 크기 (동의 버튼 제외) */
+  button:not(.consent-buttons button):not(.button-group button) {
     padding: 0.75rem 1rem !important;
     font-size: 0.875rem !important;
+    white-space: normal !important;
+    text-align: center !important;
   }
 
   /* 채팅 입력창 */
@@ -292,12 +371,6 @@
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
   }
-
-  /* 버튼 텍스트 줄바꿈 */
-  button {
-    white-space: normal !important;
-    text-align: center !important;
-  }
 }
 
 /* ======================
@@ -305,6 +378,23 @@
    갤럭시 플립, 폴드 접음 대응
 ====================== */
 @media (max-width: 480px) {
+
+  /* Progress Bar 더 작게 */
+  .progress-line,
+  .progress-bar,
+  .step-indicator>div[class*="bg-blue"],
+  .step-indicator>div[class*="bg-primary"] {
+    min-width: 60px !important;
+    height: 2px !important;
+  }
+
+  /* 동의 버튼 작은 화면 */
+  .consent-buttons button,
+  .button-group button {
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+  }
+
   .kiosk-title {
     font-size: 1.5rem !important;
     /* 32px → 24px */
@@ -371,6 +461,23 @@
    매우 좁은 커버 스크린 특화
 ====================== */
 @media (max-width: 420px) {
+
+  /* Progress Bar 최소 크기 */
+  .progress-line,
+  .progress-bar,
+  .step-indicator>div[class*="bg-blue"],
+  .step-indicator>div[class*="bg-primary"] {
+    min-width: 40px !important;
+    height: 2px !important;
+  }
+
+  /* 동의 버튼 초소형 화면 */
+  .consent-buttons button,
+  .button-group button {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+
   .kiosk-intro {
     padding: 0.75rem !important;
   }
@@ -445,7 +552,7 @@
     /* 14px */
   }
 
-  button {
+  button:not(.consent-buttons button):not(.button-group button) {
     padding: 0.625rem 0.875rem !important;
     font-size: 0.8125rem !important;
     /* 13px */
