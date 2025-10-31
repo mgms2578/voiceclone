@@ -950,16 +950,32 @@ export default function KioskPage() {
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
               음성 녹음하기
             </h1>
-            <div className="flex items-center justify-center text-blue-600">
-              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold mr-4">
+            <div className="flex items-center justify-center gap-4">
+              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold flex-shrink-0">
                 1
               </div>
-              <div className="w-16 h-1 bg-gray-300 mr-4"></div>
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold mr-4">
+              <div
+                className="bg-gray-300 flex-shrink-0"
+                style={{
+                  width: "64px",
+                  height: "2px",
+                  minWidth: "64px",
+                  minHeight: "2px",
+                }}
+              ></div>
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold flex-shrink-0">
                 2
               </div>
-              <div className="w-16 h-1 bg-gray-300 mr-4"></div>
-              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">
+              <div
+                className="bg-gray-300 flex-shrink-0"
+                style={{
+                  width: "64px",
+                  height: "2px",
+                  minWidth: "64px",
+                  minHeight: "2px",
+                }}
+              ></div>
+              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold flex-shrink-0">
                 3
               </div>
             </div>
