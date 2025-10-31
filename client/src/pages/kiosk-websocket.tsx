@@ -832,20 +832,28 @@ export default function KioskPage() {
             <h1 className="text-xl md:text-4xl font-bold text-gray-800 mb-2">
               개인정보 수집 및 이용 동의
             </h1>
-            {/* Progress Bar - 충분한 간격과 작은 크기 */}
+            {/* Progress Bar - 인라인 스타일로 확실하게 선으로 표시 */}
             <div className="flex items-center justify-center gap-4 py-2">
               <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
                 1
               </div>
-              <div className="w-16 h-0.5 bg-blue-600 flex-shrink-0"></div>
+              <div
+                className="bg-blue-600 flex-shrink-0"
+                style={{
+                  width: "64px",
+                  height: "2px",
+                  minWidth: "64px",
+                  minHeight: "2px",
+                }}
+              ></div>
               <div className="w-6 h-6 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">
                 2
               </div>
             </div>
           </div>
 
-          {/* 정보 박스 - 패딩 최소화 */}
-          <div className="flex-1 bg-gray-50 rounded-xl p-3 mb-3 overflow-y-auto">
+          {/* 정보 박스 - 적당한 간격 (mb-1.5) */}
+          <div className="flex-1 bg-gray-50 rounded-xl pt-3 px-3 pb-3 mb-1.5 overflow-y-auto">
             <div className="space-y-3">
               <Card>
                 <CardContent className="p-3 consent-info-box">
@@ -877,7 +885,7 @@ export default function KioskPage() {
             </div>
           </div>
 
-          {/* 버튼 - 크기 최소화 */}
+          {/* 버튼 - 적당한 간격 */}
           <div className="flex gap-2 justify-center mb-2 consent-buttons px-2">
             <Button
               onClick={handleDeclineConsent}
