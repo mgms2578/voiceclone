@@ -832,12 +832,16 @@ export default function KioskPage() {
             <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3">
               개인정보 수집 및 이용 동의
             </h1>
-            <div className="flex items-center justify-center text-blue-600 step-indicator">
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
+            {/* Progress Bar - gap 추가, 원 크기 축소 */}
+            <div className="flex items-center justify-center text-blue-600 step-indicator gap-3">
+              <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold flex-shrink-0">
                 1
               </div>
-              <div className="progress-line bg-blue-600 mx-2"></div>
-              <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">
+              <div
+                className="progress-line bg-blue-600"
+                style={{ width: "60px", height: "3px" }}
+              ></div>
+              <div className="w-7 h-7 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold flex-shrink-0">
                 2
               </div>
             </div>
@@ -854,7 +858,6 @@ export default function KioskPage() {
                   </h3>
                   <ul className="text-gray-600 space-y-1 consent-info-text text-sm md:text-base">
                     <li>• 음성 데이터 (10-20초 분량)</li>
-                    <li>• 체험 진행 로그 (익명 처리)</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -866,7 +869,7 @@ export default function KioskPage() {
                     이용 목적 및 보유 기간
                   </h3>
                   <ul className="text-gray-600 space-y-1 consent-info-text text-sm md:text-base">
-                    <li>• 목적: AI 음성 클로닝 체험 및 딥페이크 교육</li>
+                    <li>• 목적: AI 음성 클로닝 체험</li>
                     <li>• 보유 기간: 체험 완료 후 즉시 삭제</li>
                     <li>
                       • 외부 전송: MiniMax AI 서비스 (일시적 처리 후 삭제)
@@ -913,7 +916,7 @@ export default function KioskPage() {
 
           {/* 경고 문구 - 패딩 줄임 */}
           <div className="bg-red-50 border border-red-200 p-3 rounded-lg">
-            <p className="text-red-600 font-medium text-center text-sm md:text-base">
+            <p className="text-red-600 font-medium text-center text-sm md:text-base leading-tight">
               <TriangleAlert className="inline mr-2 w-4 h-4" />본 동의는 체험을
               위한 것이며, 언제든지 체험을 중단할 수 있습니다.
             </p>
