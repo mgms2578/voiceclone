@@ -1101,11 +1101,13 @@ export default function KioskPage() {
                 {recording.error}
               </div>
             )}
-            <div className="mt-6 text-gray-600 text-center">
-              <p>
-                녹음 시작하기 버튼을 누르고 위의 대본을 자연스럽게 읽어주세요
-              </p>
-            </div>
+            {!uploadAudioMutation.isPending && !uploadAudioMutation.isError && (
+              <div className="mt-6 text-gray-600 text-center">
+                <p>
+                  녹음 시작하기 버튼을 누르고 위의 대본을 자연스럽게 읽어주세요
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
