@@ -578,6 +578,10 @@ export default function KioskPage() {
   const handleConfirmEnd = () => {
     setShowEndDialog(false);
 
+    // 체험종료시 음성 출력 정지
+    tts.stop(); // WebSocket TTS 중단
+    stopAllGlobalAudio(); // 전역 오디오 중단
+
     // 진행중인 API 요청들 취소
     queryClient.cancelQueries();
 
