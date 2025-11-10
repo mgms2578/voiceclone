@@ -577,18 +577,23 @@ export default function KioskPage() {
   };
 
   const handleVoiceInput = () => {
-    // 1️⃣ 버튼 누르면 무조건 TTS부터 중단
-    ttsAllowedRef.current = false; // 이번 턴에는 TTS 재생 금지
-    tts.stop(); // WebSocket TTS 중단
-    // stopAllGlobalAudio();  // 다른 오디오까지 끊고 싶으면 이 줄도 사용
+    // 1️⃣ 버튼 누르면 항상 현재 TTS 먼저 중단
+    tts.stop();
+    // 필요하면: stopAllGlobalAudio();
     speech.setTTSActive(false);
 
-    // 2️⃣ 그 다음에 마이크 토글
+    // 2️⃣ 지금 듣는 중이라면 → 듣기 종료 + transcript 정리만 하고 끝
     if (speech.isListening) {
       speech.stopListening();
-    } else {
-      speech.startListening();
+      speech.resetTranscript(); // 🔴 남아 있던 인식 내용 제거 (autoSend 방지)
+      return;
     }
+
+    // 3️⃣ 지금 듣는 중이 아니라면 → 새로운 음성 입력 시작
+    //    이전에 남아있던 transcript를 먼저 지우고 시작
+    speech.resetTranscript(); // 🔴 옛날 텍스트 때문에 바로 autoSend 되는 것 방지
+    ttsAllowedRef.current = true; // 이 다음에 올 응답은 TTS로 읽어도 OK
+    speech.startListening();
   };
 
   const handleEndExperience = () => {
