@@ -98,36 +98,23 @@ export async function getEducationalResponse(
 - 체험 권유는 직설적이거나 은근하거나 회상형으로 자유롭게 변주  
 `;
 
-    // 👇 이 줄을 바로 여기에 넣으세요
-    console.log("[prompt-check]", systemPrompt.slice(0, 50));
-
     // Build conversation context
     const conversationContext = conversationHistory
+      .slice(-7)
       .map((msg) => `${msg.role === "user" ? "사용자" : "AI"}: ${msg.content}`)
       .join("\n");
 
-    const fullPrompt = `${systemPrompt}\n\n대화 기록:\n${conversationContext}\n\n사용자의 새 메시지: ${userMessage}`;
-
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-lite",
-
-      // 🔥 다양성 향상 설정
+      systemInstruction: systemPrompt, // ✅ 여기로 이동
       generationConfig: {
-        temperature: 0.9, // 표현 다양성 (0.7~0.9 추천)
-        topP: 0.95, // 확률 기반 다양성 제어
-        topK: 40, // 후보 단어 수 제한 (값이 높을수록 자유도↑)
-        maxOutputTokens: 200, // 최대 출력 토큰 (응답 길이)
+        temperature: 0.9,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 200,
       },
-
-      // 🌐 검색 기능 활성화 (Google Search Grounding)
-      tools: [
-        {
-          type: "google_search",
-          config: { numResults: 5 }, // 한 번에 검색할 결과 수
-        },
-      ],
-
-      contents: fullPrompt,
+      contents: `대화 기록:\n${conversationContext}\n\n사용자의 새 메시지: ${userMessage}`,
+      // ✅ systemPrompt 제외
     });
 
     let responseText =
