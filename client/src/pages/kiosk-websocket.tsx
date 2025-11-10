@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -126,6 +126,7 @@ export default function KioskPage() {
   const recording = useRecording();
   const speech = useSpeech();
   const tts = useTTS({ mode: "websocket", sessionId: sessionId || undefined });
+  const ttsAllowedRef = useRef(true); // ✅ TTS 재생 허용 여부 플래그
 
   // TTS WebSocket 연결 상태 디버깅
   useEffect(() => {
@@ -224,6 +225,13 @@ export default function KioskPage() {
         isPlaying: tts.isPlaying,
       });
 
+      // ✅ 마이크 버튼으로 TTS를 꺼둔 상태면, 이번 응답은 음성으로 재생하지 않음
+      if (!ttsAllowedRef.current) {
+        console.log("TTS 비활성 상태 → 이번 AI 응답은 재생하지 않음");
+        return;
+      }
+
+      // 실제 TTS 재생
       tts
         .speak(data.aiMessage.content)
         .then(() => {
@@ -235,6 +243,7 @@ export default function KioskPage() {
           speech.setTTSActive(false);
         });
     },
+
     onError: (error: Error) => {
       // 세션이 삭제된 경우는 정상적인 상황이므로 에러 토스트를 표시하지 않음
       if (
@@ -412,6 +421,7 @@ export default function KioskPage() {
         speech.stopListening();
 
         // 메시지 전송 시점부터 TTS 활성화 (AI 응답 완료까지 마이크 차단)
+        ttsAllowedRef.current = true; // ✅ 자동 전송일 때도 이번 턴 TTS 재생 허용
         speech.setTTSActive(true);
 
         // Add user message immediately to UI (same as manual send)
@@ -539,6 +549,10 @@ export default function KioskPage() {
 
   const handleSendMessage = () => {
     if (inputMessage.trim() && !sendMessageMutation.isPending) {
+      // 🔴 이전에 재생 중이던 TTS 먼저 끊기
+      tts.stop();
+      // 필요하면: stopAllGlobalAudio();
+
       const messageToSend = inputMessage.trim();
       setInputMessage("");
       speech.resetTranscript();
@@ -547,6 +561,7 @@ export default function KioskPage() {
       speech.stopListening();
 
       // 메시지 전송 시점부터 TTS 활성화 (AI 응답 완료까지 마이크 차단)
+      ttsAllowedRef.current = true; // ✅ 이번 요청에 대해서는 TTS 재생 허용
       speech.setTTSActive(true);
 
       // Add user message immediately to UI
@@ -563,6 +578,7 @@ export default function KioskPage() {
 
   const handleVoiceInput = () => {
     // 1️⃣ 버튼 누르면 무조건 TTS부터 중단
+    ttsAllowedRef.current = false; // 이번 턴에는 TTS 재생 금지
     tts.stop(); // WebSocket TTS 중단
     // stopAllGlobalAudio();  // 다른 오디오까지 끊고 싶으면 이 줄도 사용
     speech.setTTSActive(false);
@@ -581,6 +597,8 @@ export default function KioskPage() {
 
   const handleConfirmEnd = () => {
     setShowEndDialog(false);
+    // ✅ 이후에 도착할 응답들은 전부 TTS 재생 금지
+    ttsAllowedRef.current = false;
 
     // 체험종료시 음성 출력 정지
     tts.stop(); // WebSocket TTS 중단
