@@ -562,11 +562,15 @@ export default function KioskPage() {
   };
 
   const handleVoiceInput = () => {
+    // 1️⃣ 버튼 누르면 무조건 TTS부터 중단
+    tts.stop(); // WebSocket TTS 중단
+    // stopAllGlobalAudio();  // 다른 오디오까지 끊고 싶으면 이 줄도 사용
+    speech.setTTSActive(false);
+
+    // 2️⃣ 그 다음에 마이크 토글
     if (speech.isListening) {
       speech.stopListening();
     } else {
-      tts.stop(); // Stop any current TTS
-      speech.setTTSActive(false); // Clear TTS state immediately
       speech.startListening();
     }
   };
