@@ -62,6 +62,10 @@ export function useTTS({ mode, sessionId }: UseTtsProps) {
     worker.onmessage = (e) => {
       const { type, data, batchBytes } = e.data; // ✅ frames → data
       if (type === "batch") {
+        if (stoppedRef.current) {
+          console.log("🧹 stop 이후 Worker 배치 무시");
+          return;
+        }
         // Worker에서 처리된 배치를 큐에 추가
         appendQueueRef.current.push(new Uint8Array(data)); // ✅ frames → data
         totalBytesRef.current += batchBytes || data.byteLength;
@@ -534,12 +538,35 @@ export function useTTS({ mode, sessionId }: UseTtsProps) {
   const stop = useCallback(() => {
     console.log("🛑 TTS stop 호출");
 
-    // ✅ 이제부터 들어오는 오디오는 전부 무시
+    // 이제부터 들어오는 오디오는 전부 무시
     stoppedRef.current = true;
 
+    // 재생 중인 오디오 바로 정지
     if (audioElementRef.current) {
-      audioElementRef.current.pause();
-      audioElementRef.current.currentTime = 0;
+      try {
+        audioElementRef.current.pause();
+        audioElementRef.current.currentTime = 0;
+      } catch (e) {
+        console.log("오디오 정지 중 오류:", e);
+      }
+    }
+
+    // 🔥 큐에 쌓여 있던 배치도 싹 비우기
+    appendQueueRef.current = [];
+    taskCompleteRef.current = false;
+
+    // 필요하다면 버퍼도 비우기 (선택)
+    const sb = sourceBufferRef.current;
+    if (sb) {
+      try {
+        if (sb.updating) sb.abort();
+        const b = sb.buffered;
+        if (b.length) {
+          sb.remove(0, b.end(b.length - 1));
+        }
+      } catch (e) {
+        console.log("SourceBuffer clear 중 오류:", e);
+      }
     }
 
     startedRef.current = false;
