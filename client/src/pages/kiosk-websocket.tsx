@@ -577,26 +577,35 @@ export default function KioskPage() {
   };
 
   const handleVoiceInput = () => {
-    // 0️⃣ TTS가 재생 중이면 → 일단 TTS부터 끄고 끝내기
-    if (tts.isPlaying) {
-      console.log("마이크 버튼: TTS 재생 중이라 우선 TTS만 정지");
-      tts.stop();
-      speech.setTTSActive(false);
-      // 필요하면 전역 오디오까지 모두 끄고 싶으면 이 줄도:
-      // stopAllGlobalAudio();
-      return; // 🔴 여기서 끝! 마이크는 아직 시작하지 않음
-    }
+    // ✅ 0. 이번 턴에는 "내가 말한 다음에 오는 응답"은 읽어도 되지만,
+    //    지금 재생 중인 음성은 무조건 끊자
+    ttsAllowedRef.current = true;
 
-    // 1️⃣ 여기까지 왔다는 건, TTS는 이미 안 재생 중인 상태
-    //    → 음성 인식을 토글하는 순수 마이크 버튼 역할만 수행
+    console.log("마이크 버튼 클릭 → TTS 강제 중단 시도");
+
+    // 1차 정지: 바로 TTS 중단
+    tts.stop();
+    speech.setTTSActive(false);
+
+    // 🔁 2차 정지: 짧은 딜레이 후 한 번 더 강제 중단
+    setTimeout(() => {
+      console.log("마이크 버튼 → 2차 TTS 정지");
+      try {
+        tts.stop();
+        stopAllGlobalAudio(); // (HTMLAudio 기반 재생이 있다면 이것도 같이 정지)
+      } catch (e) {
+        console.log("TTS 2차 정지 중 오류:", e);
+      }
+    }, 150); // 100~200ms 정도면 충분
+
+    // 2. 이후 마이크 on/off 토글
     if (speech.isListening) {
-      console.log("마이크 버튼: 듣기 중이어서 stopListening 호출");
+      console.log("마이크 버튼: 듣기 중 → stopListening");
       speech.stopListening();
-      speech.resetTranscript(); // 이전 인식 내용도 정리
+      speech.resetTranscript(); // 남아있던 텍스트도 제거 (autoSend 방지)
     } else {
       console.log("마이크 버튼: 듣기 시작");
-      speech.resetTranscript(); // 혹시 남아 있을지 모를 transcript 초기화
-      ttsAllowedRef.current = true; // 이후에 올 응답은 다시 읽어도 OK
+      speech.resetTranscript();
       speech.startListening();
     }
   };
